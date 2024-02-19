@@ -12,10 +12,10 @@ WEIGHT_DECAY = 0
 MOMENTUM = 0.9
 LOG_STEP = 10  # Step size for printing the log info
 SAVE_STEP = 100  # Step size for saving the trained models
-MODEL_PATH = "/home/nika/private/CE Project/saved_models2/"
+MODEL_PATH = '/home/nika/private/CE Project/saved_models2/'
 
 # Evaluation Phase
-OUTPUT_PATH = "/home/nika/private/CE Project/test_imgs/"  # Path where the output images should be saved
+OUTPUT_PATH = '/home/nika/private/CE Project/test_imgs/'  # Path where the output images should be saved
 LOAD_ITER = 50  # Iteration which the model to be loaded was saved
 LOAD_EPOCH = 1  # Epoch in which the model to be loaded was saved
 NUM_SAMPLES = 20  # Number of pictures to be plotted
