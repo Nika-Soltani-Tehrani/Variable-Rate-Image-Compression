@@ -1,0 +1,7 @@
+.idea/
+*.pyc
+data/
+test_imgs/
+saved_models/
+saved_models2/
+__pycache__
