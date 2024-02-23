@@ -67,7 +67,7 @@ def eval_model(model, imgs):
     """Evaluate the model on a batch of images."""
     # Patch the image
     patches = to_patches(imgs, config.PATCH_SIZE)
-    r_patches = []  # Reconstructed Patches
+    reconstructed_patches = []
     if config.RESIDUAL is None:
         model.reset_state()
     for p in patches:
@@ -75,9 +75,9 @@ def eval_model(model, imgs):
             outputs = model.sample(Variable(p))
         else:
             outputs = model(Variable(p))
-        r_patches.append(outputs)
+        reconstructed_patches.append(outputs)
     # Transform the patches into the image
-    outputs = reconstruct_patches(r_patches)
+    outputs = reconstruct_patches(reconstructed_patches)
     return outputs
 
 
@@ -109,7 +109,6 @@ if __name__ == "__main__":
                                                                              config.LOAD_EPOCH,
                                                                              config.LOAD_ITER)
                                  )
-    print(path_to_model)
-    path_to_model = '/home/nika/private/CE Project/saved_models2/fc_res-p4_b32-1_50.pkl'
+    path_to_model = '/home/nika/private/CE Project/saved_models/fc_res-p8_b4-1_250.pkl'
     model.load_state_dict(torch.load(path_to_model))
     main()

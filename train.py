@@ -91,13 +91,13 @@ def train_residual_model(model, patch, optimizer, loss_function):
     # Set gradients to Zero
     optimizer.zero_grad()
 
-    # for p in range(config.REPEAT):
-    #     # Forward + Backward + Optimize
-    #     reconstructed_patches = model(v_patch, p)
-    #     losses.append(loss_function(reconstructed_patches, target_tensor))
+    for p in range(config.REPEAT):
+        # Forward + Backward + Optimize
+        reconstructed_patches = model(v_patch, p)
+        losses.append(loss_function(reconstructed_patches, target_tensor))
 
-        # v_patch = reconstructed_patches
-    reconstructed_patches = model(v_patch)
+        v_patch = reconstructed_patches
+
     loss = sum(losses)
     loss.backward()
     optimizer.step()

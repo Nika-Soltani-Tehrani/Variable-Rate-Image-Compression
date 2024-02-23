@@ -73,24 +73,24 @@ class CoreFC(nn.Module):
         return out
 
 
-class Residual2CoreFC(nn.Module):
+class ResidualFullyConnectedNetwork(nn.Module):
 
     def __init__(self, coded_size=4, patch_size=8, repetition=16):
-        super(Residual2CoreFC, self).__init__()
+        super(ResidualFullyConnectedNetwork, self).__init__()
         self.repetition = repetition
 
         self.encoders = nn.ModuleList([EncoderFC(coded_size, patch_size) for i in range(repetition)])
         self.decoders = nn.ModuleList([DecoderFC(coded_size, patch_size) for i in range(repetition)])
 
-    # def forward(self, input_patch, pass_num):
-    #
-    #     out_bits = self.encoders[pass_num](input_patch)
-    #     output_patch = self.decoders[pass_num](out_bits)
-    #
-    #     residual_patch = input_patch - output_patch
-    #     return residual_patch
+    def forward(self, input_patch, pass_num):
 
-    def forward(self, input_patch):
+        out_bits = self.encoders[pass_num](input_patch)
+        output_patch = self.decoders[pass_num](out_bits)
+
+        residual_patch = input_patch - output_patch
+        return residual_patch
+
+    def sample(self, input_patch):
 
         outputs = []
         for pass_num in range(self.repetition):

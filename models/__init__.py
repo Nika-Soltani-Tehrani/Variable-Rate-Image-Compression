@@ -11,7 +11,7 @@ def setup():
     elif config.MODEL_TYPE == 'fc_res':
         coded_size = 4
         repeat = 16
-        model = Residual2CoreFC(coded_size, config.PATCH_SIZE, repeat)
+        model = ResidualFullyConnectedNetwork(coded_size, config.PATCH_SIZE, repeat)
         config.RESIDUAL = True
     elif config.MODEL_TYPE == 'conv':
         model = ConvolutionalCore(config.CODED_SIZE, config.PATCH_SIZE)
