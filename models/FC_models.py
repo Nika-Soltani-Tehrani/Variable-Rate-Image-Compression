@@ -3,12 +3,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class EncoderFC(nn.Module):
+class FullyConnectedEncoder(nn.Module):
     """
     FC Encoder composed by 3 512-units fully-connected layers
     """
     def __init__(self, coded_size, patch_size):
-        super(EncoderFC, self).__init__()
+        super(FullyConnectedEncoder, self).__init__()
         self.patch_size = patch_size
         self.coded_size = coded_size
 
@@ -32,12 +32,12 @@ class EncoderFC(nn.Module):
         return x
 
 
-class DecoderFC(nn.Module):
+class FullyConnectedDecoder(nn.Module):
     """
     FC Decoder composed by 3 512-units fully-connected layers
     """
     def __init__(self, coded_size, patch_size):
-        super(DecoderFC, self).__init__()
+        super(FullyConnectedDecoder, self).__init__()
         self.patch_size = patch_size
         self.coded_size = coded_size
 
@@ -64,8 +64,8 @@ class CoreFC(nn.Module):
     def __init__(self, coded_size, patch_size):
         super(CoreFC, self).__init__()
 
-        self.fc_encoder = EncoderFC(coded_size, patch_size)
-        self.fc_decoder = DecoderFC(coded_size, patch_size)
+        self.fc_encoder = FullyConnectedEncoder(coded_size, patch_size)
+        self.fc_decoder = FullyConnectedDecoder(coded_size, patch_size)
 
     def forward(self, x, num_pass=0):
         bits = self.fc_encoder(x)
@@ -79,8 +79,8 @@ class ResidualFullyConnectedNetwork(nn.Module):
         super(ResidualFullyConnectedNetwork, self).__init__()
         self.repetition = repetition
 
-        self.encoders = nn.ModuleList([EncoderFC(coded_size, patch_size) for i in range(repetition)])
-        self.decoders = nn.ModuleList([DecoderFC(coded_size, patch_size) for i in range(repetition)])
+        self.encoders = nn.ModuleList([FullyConnectedEncoder(coded_size, patch_size) for i in range(repetition)])
+        self.decoders = nn.ModuleList([FullyConnectedDecoder(coded_size, patch_size) for i in range(repetition)])
 
     def forward(self, input_patch, pass_num):
 
