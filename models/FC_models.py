@@ -73,38 +73,6 @@ class CoreFC(nn.Module):
         return out
 
 
-class ResidualCoreFC(nn.Module):
-
-    def __init__(self, coded_size=4, patch_size=8, repetition=16):
-        super(ResidualCoreFC, self).__init__()
-        self.repetition = repetition
-
-        self.encoders = []
-        self.decoders = []
-
-        for _ in range(self.repetition):
-
-            self.encoders.append(EncoderFC(coded_size, patch_size))
-            self.decoders.append(DecoderFC(coded_size, patch_size))
-
-    def forward(self, input_patch):
-        patches = []
-        bits = []
-
-        for i in range(self.repetition):
-            out_bits = self.encoders[i](input_patch)
-            output_patch = self.decoders[i](out_bits)
-
-            patches.append(output_patch)
-            bits.append(out_bits)
-
-            input_patch = input_patch.clone() - output_patch
-
-        reconstructed_patch = sum(patches)
-
-        return reconstructed_patch
-
-
 class Residual2CoreFC(nn.Module):
 
     def __init__(self, coded_size=4, patch_size=8, repetition=16):
@@ -114,46 +82,15 @@ class Residual2CoreFC(nn.Module):
         self.encoders = nn.ModuleList([EncoderFC(coded_size, patch_size) for i in range(repetition)])
         self.decoders = nn.ModuleList([DecoderFC(coded_size, patch_size) for i in range(repetition)])
 
-    def forward(self, input_patch, pass_num):
+    # def forward(self, input_patch, pass_num):
+    #
+    #     out_bits = self.encoders[pass_num](input_patch)
+    #     output_patch = self.decoders[pass_num](out_bits)
+    #
+    #     residual_patch = input_patch - output_patch
+    #     return residual_patch
 
-        out_bits = self.encoders[pass_num](input_patch)
-        output_patch = self.decoders[pass_num](out_bits)
-
-        residual_patch = input_patch - output_patch
-        return residual_patch
-
-    def sample(self, input_patch):
-
-        outputs = []
-        for pass_num in range(self.repetition):
-            out_bits = self.encoders[pass_num](input_patch)
-            output_patch = self.decoders[pass_num](out_bits)
-            outputs.append(output_patch)
-
-            input_patch = input_patch - output_patch
-
-        reconstructed_patch = sum(outputs)
-        return reconstructed_patch
-
-
-class ResidualCoreFC3(nn.Module):
-
-    def __init__(self, coded_size=4, patch_size=8, repetition=16):
-        super(ResidualCoreFC3, self).__init__()
-        self.repetition = repetition
-
-        self.encoders = nn.ModuleList([EncoderFC(coded_size, patch_size) for i in range(repetition)])
-        self.encoders = nn.ModuleList([EncoderFC(coded_size, patch_size) for i in range(repetition)])
-
-    def forward(self, input_patch, pass_num):
-
-        out_bits = self.encoders[pass_num](input_patch)
-        output_patch = self.decoders[pass_num](out_bits)
-
-        residual_patch = input_patch - output_patch  # Ideally it should be 0
-        return residual_patch
-
-    def sample(self, input_patch):
+    def forward(self, input_patch):
 
         outputs = []
         for pass_num in range(self.repetition):

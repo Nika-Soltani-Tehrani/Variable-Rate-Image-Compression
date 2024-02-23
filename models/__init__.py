@@ -9,7 +9,9 @@ def setup():
         model = CoreFC(config.CODED_SIZE, config.PATCH_SIZE)
         config.RESIDUAL = False
     elif config.MODEL_TYPE == 'fc_res':
-        model = Residual2CoreFC(config.CODED_SIZE, config.PATCH_SIZE, config.REPEAT)
+        coded_size = 4
+        repeat = 16
+        model = Residual2CoreFC(coded_size, config.PATCH_SIZE, repeat)
         config.RESIDUAL = True
     elif config.MODEL_TYPE == 'conv':
         model = ConvolutionalCore(config.CODED_SIZE, config.PATCH_SIZE)

@@ -64,7 +64,7 @@ def to_patches(x, patch_size):
     return patches
 
 
-def train_oneway_model(model, patch, optimizer, criterion):
+def train_oneway_model(model, patch, optimizer, loss_function):
     """Train a one-way model on a single patch."""
     # Transform the tensor into Variable
     v_patch = Variable(patch)
@@ -74,14 +74,14 @@ def train_oneway_model(model, patch, optimizer, criterion):
 
     # Forward + Backward + Optimize
     reconstructed_patches = model(v_patch)
-    loss = criterion(reconstructed_patches, v_patch)
+    loss = loss_function(reconstructed_patches, v_patch)
     loss.backward()
     optimizer.step()
 
     return loss.item()
 
 
-def train_residual_model(model, patch, optimizer, criterion):
+def train_residual_model(model, patch, optimizer, loss_function):
     """Train a residual model on a single patch."""
     # Transform the tensor into Variable
     v_patch = Variable(patch)
@@ -91,12 +91,13 @@ def train_residual_model(model, patch, optimizer, criterion):
     # Set gradients to Zero
     optimizer.zero_grad()
 
-    for p in range(config.REPEAT):
-        # Forward + Backward + Optimize
-        reconstructed_patches = model(v_patch, p)
-        losses.append(criterion(reconstructed_patches, target_tensor))
+    # for p in range(config.REPEAT):
+    #     # Forward + Backward + Optimize
+    #     reconstructed_patches = model(v_patch, p)
+    #     losses.append(loss_function(reconstructed_patches, target_tensor))
 
-        v_patch = reconstructed_patches
+        # v_patch = reconstructed_patches
+    reconstructed_patches = model(v_patch)
     loss = sum(losses)
     loss.backward()
     optimizer.step()
@@ -104,7 +105,7 @@ def train_residual_model(model, patch, optimizer, criterion):
     return loss.item()
 
 
-def train_mix_model(model, patch, optimizer, criterion):
+def train_mix_model(model, patch, optimizer, loss_function):
     """Train a mix model on a single patch."""
     # Transform the tensor into Variable
     v_patch = Variable(patch)
@@ -114,7 +115,7 @@ def train_mix_model(model, patch, optimizer, criterion):
     optimizer.zero_grad()
 
     reconstructed_patches = model(v_patch)
-    current_loss = criterion(reconstructed_patches, v_patch)
+    current_loss = loss_function(reconstructed_patches, v_patch)
     losses.append(current_loss)
 
     loss = sum(losses)
@@ -124,22 +125,22 @@ def train_mix_model(model, patch, optimizer, criterion):
     return loss.data[0]
 
 
-def train_model(model, patches, optimizer, criterion):
+def train_model(model, patches, optimizer, loss_function):
     """Train the model on a batch of patches."""
     running_loss = 0.0
 
     if config.MODEL_TYPE in ONEWAY_MODELS:
         for patch in patches:
-            running_loss += train_oneway_model(model, patch, optimizer, criterion)
+            running_loss += train_oneway_model(model, patch, optimizer, loss_function)
 
     elif config.MODEL_TYPE in RESIDUAL_MODELS:
         for patch in patches:
-            running_loss += train_residual_model(model, patch, optimizer, criterion)
+            running_loss += train_residual_model(model, patch, optimizer, loss_function)
 
     else:
         model.reset_state()
         for patch in patches:
-            running_loss += train_mix_model(model, patch, optimizer, criterion)
+            running_loss += train_mix_model(model, patch, optimizer, loss_function)
 
     return running_loss
 
@@ -161,7 +162,7 @@ def main():
     model = models.setup()
 
     # Define the LOSS and the OPTIMIZER
-    criterion = nn.MSELoss()
+    loss_function = nn.MSELoss()
     params = list(model.parameters())
     optimizer = optim.Adam(params, lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY)
 
@@ -180,7 +181,7 @@ def main():
             patches = to_patches(images, config.PATCH_SIZE)
 
             # Train the model on the patches
-            running_loss = train_model(model, patches, optimizer, criterion)
+            running_loss = train_model(model, patches, optimizer, loss_function)
 
             # STATISTICS:
             if (i + 1) % config.LOG_STEP == 0:
