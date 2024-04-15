@@ -1,10 +1,10 @@
 # Training Phase
 MODEL_TYPE = 'fc_res'  # Name of the model to be used: fc, fc_res, conv, conv_res, lstm
 RESIDUAL = True  # Set True if the model is residual, otherwise False
-PATCH_SIZE = 8  # Size for the encoded subdivision of the input image
+PATCH_SIZE = 4  # Size for the encoded subdivision of the input image
 NUM_PATCHES = (32 // PATCH_SIZE) ** 2  # Number of patches per image
-CODED_SIZE = 4  # Number of bits representing the encoded patch
-REPEAT = 16  # Number of passes for recursive architectures
+CODED_SIZE = 32  # Number of bits representing the encoded patch
+REPEAT = 8  # Number of passes for recursive architectures
 BATCH_SIZE = 4  # Mini-batch size
 NUM_EPOCHS = 30  # Number of iterations where the system sees all the data
 LEARNING_RATE = 0.1

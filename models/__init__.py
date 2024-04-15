@@ -9,9 +9,7 @@ def setup():
         model = CoreFC(config.CODED_SIZE, config.PATCH_SIZE)
         config.RESIDUAL = False
     elif config.MODEL_TYPE == 'fc_res':
-        coded_size = 4
-        repeat = 16
-        model = ResidualFullyConnectedNetwork(coded_size, config.PATCH_SIZE, repeat)
+        model = ResidualFullyConnectedNetwork(config.CODED_SIZE, config.PATCH_SIZE, config.REPEAT)
         config.RESIDUAL = True
     elif config.MODEL_TYPE == 'conv':
         model = ConvolutionalCore(config.CODED_SIZE, config.PATCH_SIZE)

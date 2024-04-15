@@ -109,6 +109,6 @@ if __name__ == "__main__":
                                                                              config.LOAD_EPOCH,
                                                                              config.LOAD_ITER)
                                  )
-    path_to_model = '/home/nika/private/CE Project/saved_models/fc_res-p8_b4-1_250.pkl'
+    path_to_model = '/home/nika/private/CE Project/saved_models2/fc_res-p4_b32-1_50.pkl'
     model.load_state_dict(torch.load(path_to_model))
     main()
