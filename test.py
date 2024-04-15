@@ -84,7 +84,7 @@ def eval_model(model, imgs):
 def main():
     """Main function to evaluate the model."""
     print(":::::::::::::::::Starting eval:::::::::::::::::")
-    for i in range(config.NUM_SAMPLES // config.BATCH_SIZE):
+    for i in range(config.NUM_SAMPLES):
         imgs, _ = next(dataiter)
         print(imgs.shape)
         img_save(torchvision.utils.make_grid(imgs), "prova_" + str(i))
